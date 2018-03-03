@@ -77,9 +77,39 @@ public class ApproveStep extends BasicHubotStep {
 
         final URL url = new URL(buildUrl);
 
-        final String message = step.getMessage() + "\n" + "\tto Proceed reply:  .j proceed "
-            + url.getPath() + "\n" + "\tto Abort reply  :  .j abort " + url.getPath() + "\n\n"
-            + "Job: " + buildUrl.toString() + "\n" + "User: " + buildUser;
+        final String message = "{ \"text\": \"" + step.getMessage() + "\", "+
+          "\"attachments\": [ { \"text\": \"What would you like to do?\","+
+          "\"callback_id\": \"promote_build\","+
+          "\"color\": \"3AA3E3\","+
+          "\"attachment_type\": \"default\","+
+          "\"actions\": ["+
+             "{"+
+               "\"name\": \"proceed\","+
+               "\"text\": \"Proceed\","+
+               "\"style\": \"danger\","+
+               "\"type\": \"button\","+
+               "\"value\": \"proceed\","+
+               "\"confirm\": {"+
+                 "\"title\": \"Confirmation\","+
+                 "\"text\": \"Selecting Yes will approve and promote the release!\","+
+                 "\"ok_text\": \"Yes\","+
+                 "\"dismiss_text\": \"No\""+
+               "}"+
+             "},"+
+             "{"+
+               "\"name\": \"abort\","+
+               "\"text\": \"Abort\","+
+               "\"type\": \"button\","+
+               "\"value\": \"abort\""+
+             "},"+
+             "{"+
+               "\"name\": \"changeset\","+
+               "\"text\": \"Retrieve changeset\","+
+               "\"type\": \"button\","+
+               "\"value\": \"changeset\""+
+             "}"+
+           "]"+
+          "} ] }";
 
         logger.println("Hubot: ROOM - " + room + " - Approval Message - " + step.getMessage());
         response = hubotService.sendMessage(room, message);
